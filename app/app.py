@@ -37,7 +37,6 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("Personal Information")
-    patient_id = st.text_input("Patient ID", value="", placeholder="e.g., P001")
     gender = st.selectbox("Gender", ["Male", "Female", "Other"])
     age = st.number_input("Age", min_value=0, max_value=120, value=45)
     hypertension = st.selectbox("Hypertension", [0, 1], format_func=lambda x: "Yes" if x == 1 else "No")
@@ -59,7 +58,6 @@ if st.button("🔍 Predict Stroke Risk", type="primary"):
     else:
         # Create input dataframe
         input_data = pd.DataFrame({
-            'id': [patient_id if patient_id else "Unknown"],
             'gender': [gender],
             'age': [age],
             'hypertension': [hypertension],
@@ -80,9 +78,6 @@ if st.button("🔍 Predict Stroke Risk", type="primary"):
             # Display results
             st.markdown("---")
             st.subheader("Prediction Results")
-            
-            if patient_id:
-                st.info(f"**Patient ID:** {patient_id}")
             
             col1, col2, col3 = st.columns(3)
             
