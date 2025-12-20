@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 
 # Set page config
 st.set_page_config(
-    page_title="Stroke Risk Prediction",
+    page_title="Prediksi Risiko Stroke",
     page_icon="🏥",
     layout="wide"
 )
@@ -26,35 +26,35 @@ def load_model():
 model = load_model()
 
 # Title and description
-st.title("🏥 Stroke Risk Prediction System")
+st.title("🏥 Aplikasi Prediksi Risiko Stroke")
 st.markdown("""
-This application predicts the risk of stroke based on various health and demographic factors.
-Fill in the information below to get a prediction.
+Aplikasi ini memprediksi risiko penyakit stroke berdasarkan berbagai informasi kesehatan dan faktor demogarfi.
+Isi informasi dibawah untuk mendapatkan prediksi.
 """)
 
 # Create two columns for input
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("Personal Information")
-    gender = st.selectbox("Gender", ["Male", "Female", "Other"])
-    age = st.number_input("Age", min_value=0, max_value=120, value=45)
-    hypertension = st.selectbox("Hypertension", [0, 1], format_func=lambda x: "Yes" if x == 1 else "No")
-    heart_disease = st.selectbox("Heart Disease", [0, 1], format_func=lambda x: "Yes" if x == 1 else "No")
-    ever_married = st.selectbox("Ever Married", ["Yes", "No"])
+    st.subheader("Infomasi Pribadi")
+    gender = st.selectbox("Jenis Kelamin", ["Laki-Laki", "Perempuan"])
+    age = st.number_input("Umur", min_value=0, max_value=120, value=45)
+    hypertension = st.selectbox("Hipertensi", [0, 1], format_func=lambda x: "Ya" if x == 1 else "Tidak")
+    heart_disease = st.selectbox("Penyakit Jantung", [0, 1], format_func=lambda x: "Ya" if x == 1 else "Tidak")
+    ever_married = st.selectbox("Status Menikah", ["Ya", "Tidak"])
 
 with col2:
-    st.subheader("Health & Lifestyle")
-    work_type = st.selectbox("Work Type", ["Private", "Self-employed", "Govt_job", "children", "Never_worked"])
-    residence_type = st.selectbox("Residence Type", ["Urban", "Rural"])
-    avg_glucose_level = st.number_input("Average Glucose Level", min_value=0.0, max_value=300.0, value=100.0)
+    st.subheader("Kesehatan dan Gaya Hidup")
+    work_type = st.selectbox("Tipe Pekerjaan", ["Pribadi", "WiraSwasta", "Pemerintahan", "Anak-Anak", "Belum Pernah Bekerja"])
+    residence_type = st.selectbox("Tipe Tempat Tinggal", ["Perkotaan", "Pedesaan"])
+    avg_glucose_level = st.number_input("Rata-Rata Kadar Gula Darah", min_value=0.0, max_value=300.0, value=100.0)
     bmi = st.number_input("BMI", min_value=0.0, max_value=100.0, value=25.0)
-    smoking_status = st.selectbox("Smoking Status", ["formerly smoked", "never smoked", "smokes", "Unknown"])
+    smoking_status = st.selectbox("Status Merokok", ["pernah merokok", "tidak pernah merokok", "merokok", "Unknown"])
 
 # Predict button
-if st.button("🔍 Predict Stroke Risk", type="primary"):
+if st.button("🔍 Prediksi Risiko", type="primary"):
     if model is None:
-        st.error("Cannot make prediction. Model not loaded.")
+        st.error("Tidak bisa membuat prediksi. Model belum diload.")
     else:
         # Create input dataframe
         input_data = pd.DataFrame({
@@ -77,32 +77,32 @@ if st.button("🔍 Predict Stroke Risk", type="primary"):
             
             # Display results
             st.markdown("---")
-            st.subheader("Prediction Results")
+            st.subheader("Hasil Prediksi")
             
             col1, col2, col3 = st.columns(3)
             
             with col1:
-                st.metric("Prediction", "High Risk" if prediction == 1 else "Low Risk")
+                st.metric("Prediksi", "Risiko Tinggi" if prediction == 1 else "Risiko Rendah")
             
             with col2:
-                st.metric("Stroke Probability", f"{prediction_proba[1]:.2%}")
+                st.metric("Probabilitas Stroke", f"{prediction_proba[1]:.2%}")
             
             with col3:
-                st.metric("No Stroke Probability", f"{prediction_proba[0]:.2%}")
+                st.metric("tidak Ada Probabilitas Stroke", f"{prediction_proba[0]:.2%}")
             
             # Risk level indicator
             risk_level = prediction_proba[1]
             if risk_level < 0.3:
-                st.success("✅ Low risk of stroke. Continue maintaining a healthy lifestyle.")
+                st.success("✅ Resiko Terkena Stroke Rendah")
             elif risk_level < 0.7:
-                st.warning("⚠️ Moderate risk of stroke. Consider consulting with a healthcare provider.")
+                st.warning("⚠️ Risiko Terkena Stroke Sedang")
             else:
-                st.error("🚨 High risk of stroke. Please consult with a healthcare provider immediately.")
+                st.error("🚨 Risiko Terkena Stroke Tinggi")
             
             # Display probability bar chart
-            st.markdown("### Probability Distribution")
+            st.markdown("### Distribusi Probabilitas")
             prob_df = pd.DataFrame({
-                'Class': ['No Stroke', 'Stroke'],
+                'Class': ['Tidak Stroke', 'Stroke'],
                 'Probability': [prediction_proba[0], prediction_proba[1]]
             })
             st.bar_chart(prob_df.set_index('Class'))
@@ -142,30 +142,31 @@ if st.button("🔍 Predict Stroke Risk", type="primary"):
 
 # Sidebar with information
 with st.sidebar:
-    st.header("ℹ️ About")
+    st.header("ℹ️ Tentang Aplikasi")
     st.markdown("""
-    **Stroke Risk Prediction System**
+    **Aplikasi Prediksi Risiko Stroke**
     
-    This system uses machine learning (XGBoost) to predict stroke risk based on:
-    - Demographics (age, gender)
-    - Medical history (hypertension, heart disease)
-    - Lifestyle factors (smoking, BMI)
-    - Other health indicators
+    Sistem ini menggunakan model machine learning dengan (XGBoost) untuk memprediksi risiko stroke berdasarkan:
+    - Demografi (age, gender)
+    - Riwayat Penyakit (hypertension, heart disease)
+    - Gaya Hidup (smoking, BMI)
+    - Indikasi Penyakit Lainnya
     
-    **Note:** This is a prediction tool and should not replace professional medical advice.
+    **Catatan:** Sistem ini merupakan aplikasi prediksi dan tidak bisa digunakan untuk menggantikan diagnosa sesungguhnya.
     """)
     
     st.markdown("---")
-    st.header("📊 Model Information")
+    st.header("📊 Informasi Model")
     if model is not None:
-        st.success("✅ Model loaded successfully")
+        st.success("✅ Model Sudah Diterapkan")
         st.info("Model: XGBoost Classifier")
     else:
-        st.error("❌ Model not loaded")
+        st.error("❌ Model Belum Diterapkan")
     
     st.markdown("---")
     st.markdown("""
-    **Disclaimer:** 
-    This tool is for educational and informational purposes only. 
-    Always consult healthcare professionals for medical decisions.
+    **Nama Kelompok:**
+    1. Devinka Marta Legawa (23081010142)
+    2. Azzahra Asti Khairunnissa (23081010157)
+    3. Dinda Ayu Puspaningrum Marhono (23081010175) 
     """)
