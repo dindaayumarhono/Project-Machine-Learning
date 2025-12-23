@@ -199,4 +199,6 @@ shap.summary_plot(shap_values, X_test_pre_df, plot_type='bar')
 
 # SAVE MODEL
 joblib.dump(best_model, 'model/best_model.pkl')
-print('\nModel saved to model/best_model.pkl')
+joblib.dump(X_test, 'model/x_test.pkl')
+joblib.dump(y_test, 'model/y_test.pkl')
+print('\nModel saved')

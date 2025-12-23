@@ -147,11 +147,11 @@ with tab3:
     col2b.metric("ROC-AUC", f"{roc:.2f}%")
     col3b.empty()
 
-st.info("""
-**Penjelasan Hasil:**
-- **Accuracy**: ketepatan keseluruhan model dalam mengklasifikasikan data.
-- **Precision**: tingkat ketepatan model saat memprediksi pasien mengalami stroke.
-- **Recall**: kemampuan model dalam mendeteksi seluruh kasus stroke yang sebenarnya.
-- **F1-Score**: keseimbangan antara precision dan recall.
-- **ROC-AUC**: kemampuan model dalam membedakan antara pasien stroke dan tidak stroke pada berbagai nilai threshold.
-""")
+    st.info("""
+    **Penjelasan Hasil:**
+    - **Accuracy**: ketepatan keseluruhan model dalam mengklasifikasikan data.
+    - **Precision**: tingkat ketepatan model saat memprediksi pasien mengalami stroke.
+    - **Recall**: kemampuan model dalam mendeteksi seluruh kasus stroke yang sebenarnya.
+    - **F1-Score**: keseimbangan antara precision dan recall.
+    - **ROC-AUC**: kemampuan model dalam membedakan antara pasien stroke dan tidak stroke pada berbagai nilai threshold.
+    """)
