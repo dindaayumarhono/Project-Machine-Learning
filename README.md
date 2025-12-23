@@ -12,7 +12,7 @@ Aplikasi ini merupakan aplikasi machine learning berbasis website streamlit UI y
 3. Confusion matrix dan evaluasi performa
 4. Download hasil prediksi
 
-## Variabel Data yang Digunakan Terdapat 10 Jenis, yaitu:
+## Variabel Data yang Digunakan
 1. jenis kelamin
 2. usia
 3. hipertensi
@@ -23,6 +23,7 @@ Aplikasi ini merupakan aplikasi machine learning berbasis website streamlit UI y
 8. rata-rata kadar gula darah
 9. BMI
 10. status perokok
+11. Terkena stroke atau tidak
 
 ## Cara Menjalankan Aplikasi
 1. clone repository
