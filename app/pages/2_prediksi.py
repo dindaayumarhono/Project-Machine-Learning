@@ -24,7 +24,7 @@ def load_model():
 
 @st.cache_resource
 def load_test_data():
-    return joblib.load("model/X_test.pkl"), joblib.load("model/y_test.pkl")
+    return joblib.load("model/x_test.pkl"), joblib.load("model/y_test.pkl")
 
 model = load_model()
 X_test, y_test = load_test_data()
