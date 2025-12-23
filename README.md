@@ -27,6 +27,6 @@ Aplikasi ini merupakan aplikasi machine learning berbasis website streamlit UI y
 ## Cara Menjalankan Aplikasi
 1. clone repository
 2. install dependency **pip install requirements.txt**
-3. jalankan aplikasi dengan cara memanggil di terminal dengan bash **streamlit run app.home.py**
+3. jalankan aplikasi dengan cara memanggil di terminal dengan bash **streamlit run app/home.py**
 4. setelah itu akan diarahkan ke halaman browser
 
