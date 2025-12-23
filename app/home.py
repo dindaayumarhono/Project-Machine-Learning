@@ -32,6 +32,23 @@ Aplikasi ini tidak bisa dijadikan pengganti diagnosis medis, melainkan hanya ala
 """)
 
 st.markdown("""
+**Dataset yang digunakan untuk pelatihan model**
+dataset yang kami gunakan untuk pelatiham model merupakan data sekunder yang didapatkan dari website kaggle dengan judul Stroke Prediction Dataset.
+data yang digunakan berjumlah 5110 dengan 11 jenis data yaitu 
+1. gender : jenis kelamin
+2. age : usia
+3. hypertension : hipertensi
+4. heart_disease : penyakit jantung
+5. ever_married : status menikah
+6. work_type: tipe pekerjaan
+7 Residence_type: tipe tempat tinggal
+8. avg_glucose_level: rata-rata kadar gula darah
+9. bmi: indeks massa tubuh
+10. smoking_status: status merokok
+22. stroke: terkena stroke atau tidak
+""")
+
+st.markdown("""
 **Tujuan**
 - Memberikan prediksi risiko stroke
 - Menampilkan performa model
