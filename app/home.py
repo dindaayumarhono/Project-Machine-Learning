@@ -41,11 +41,11 @@ data yang digunakan berjumlah 5110 dengan 11 jenis data yaitu
 4. heart_disease : penyakit jantung
 5. ever_married : status menikah
 6. work_type: tipe pekerjaan
-7 Residence_type: tipe tempat tinggal
+7  Residence_type: tipe tempat tinggal
 8. avg_glucose_level: rata-rata kadar gula darah
 9. bmi: indeks massa tubuh
 10. smoking_status: status merokok
-22. stroke: terkena stroke atau tidak
+11. stroke: terkena stroke atau tidak
 """)
 
 st.markdown("""
