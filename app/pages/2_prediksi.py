@@ -19,15 +19,19 @@ from sklearn.metrics import (
 # Load model & data
 # =========================
 @st.cache_resource
-def load_model():
-    return joblib.load("model/best_model.pkl")
+def load_models():
+    xgb = joblib.load("model/best_model.pkl")
+    lr = joblib.load("model/lr_model.pkl")
+    rf = joblib.load("model/rf_model.pkl")
+    return lr, rf, xgb
 
 @st.cache_resource
 def load_test_data():
     return joblib.load("model/x_test.pkl"), joblib.load("model/y_test.pkl")
 
-model = load_model()
+lr_model, rf_model, xgb_model = load_models()
 X_test, y_test = load_test_data()
+
 
 st.title("Halaman Prediksi")
 
@@ -48,8 +52,8 @@ with tab1:
         df = st.session_state["uploaded_data"]
 
         if st.button("Prediksi Data CSV"):
-            preds = model.predict(df)
-            probas = model.predict_proba(df)[:, 1]
+            preds = xgb_model.predict(df)
+            probas = xgb_model.predict_proba(df)[:, 1]
 
             df_result = df.copy()
             df_result["prediksi"] = np.where(preds == 1, "Stroke", "Tidak Stroke")
@@ -99,8 +103,8 @@ with tab2:
             "smoking_status": smoking_status
         }])
 
-        pred = model.predict(input_df)[0]
-        proba = model.predict_proba(input_df)[0][1]
+        pred = xgb_model.predict(input_df)[0]
+        proba = xgb_model.predict_proba(input_df)[0][1]
 
         st.success(f"**Hasil Prediksi:** {'Stroke' if pred==1 else 'Tidak Stroke'}")
         st.metric("Probabilitas Stroke", f"{proba:.2%}")
@@ -119,33 +123,42 @@ with tab2:
 with tab3:
     st.subheader("Confusion Matrix & Performance")
 
-    y_pred = model.predict(X_test)
-    y_proba = model.predict_proba(X_test)[:, 1]
+    models = {
+        "Logistic Regression": lr_model,
+        "Random Forest": rf_model,
+        "XGBoost": xgb_model
+    }
 
-    cm = confusion_matrix(y_test, y_pred)
+    for name, model in models.items():
+        st.markdown(f"### {name}")
 
-    fig, ax = plt.subplots()
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
-    ax.set_xlabel("Predicted")
-    ax.set_ylabel("Actual")
-    st.pyplot(fig)
+        y_pred = model.predict(X_test)
+        y_proba = model.predict_proba(X_test)[:,1]
 
-    st.subheader("Performance Test")
-    acc = accuracy_score(y_test, y_pred) * 100
-    prec = precision_score(y_test, y_pred) * 100
-    rec = recall_score(y_test, y_pred) * 100
-    f1 = f1_score(y_test, y_pred) * 100
-    roc = roc_auc_score(y_test, y_proba) * 100
+        acc = accuracy_score(y_test, y_pred) * 100
+        prec = precision_score(y_test, y_pred) * 100
+        rec = recall_score(y_test, y_pred) * 100
+        f1 = f1_score(y_test, y_pred) * 100
+        roc = roc_auc_score(y_test, y_proba) * 100
 
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Accuracy", f"{acc:.2f}%")
-    col2.metric("Precision", f"{prec:.2f}%")
-    col3.metric("Recall", f"{rec:.2f}%")
+        c1, c2, c3, c4, c5 = st.columns(5)
+        c1.metric("Accuracy", f"{acc:.2f}%")
+        c2.metric("Precision", f"{prec:.2f}%")
+        c3.metric("Recall", f"{rec:.2f}%")
+        c4.metric("F1-Score", f"{f1:.2f}%")
+        c5.metric("ROC-AUC", f"{roc:.2f}%")
 
-    col1b, col2b, col3b = st.columns(3)
-    col1b.metric("F1-Score", f"{f1:.2f}%")
-    col2b.metric("ROC-AUC", f"{roc:.2f}%")
-    col3b.empty()
+        # Confusion Matrix
+        cm = confusion_matrix(y_test, y_pred)
+        fig, ax = plt.subplots()
+        sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", ax=ax)
+        ax.set_xlabel("Predicted")
+        ax.set_ylabel("Actual")
+        ax.set_title(f"Confusion Matrix - {name}")
+        st.pyplot(fig)
+
+        st.divider()
+
 
     st.info("""
     **Penjelasan Hasil:**
@@ -155,3 +168,59 @@ with tab3:
     - **F1-Score**: keseimbangan antara precision dan recall.
     - **ROC-AUC**: kemampuan model dalam membedakan antara pasien stroke dan tidak stroke pada berbagai nilai threshold.
     """)
+    
+
+    st.subheader("Perbandingan ROC-AUC Model")
+
+    models = {
+        "Logistic Regression": lr_model,
+        "Random Forest": rf_model,
+        "XGBoost": xgb_model
+    }
+
+    roc_results = []
+
+    for name, model in models.items():
+        y_proba = model.predict_proba(X_test)[:,1]
+        roc = roc_auc_score(y_test, y_proba)
+        roc_results.append([name, roc])
+
+    roc_table = pd.DataFrame(roc_results, columns=["Model", "ROC-AUC"])
+
+    st.dataframe(roc_table, use_container_width=True)
+
+    st.subheader("Perbandingan ROC Curve")
+
+    fig, ax = plt.subplots()
+
+    from sklearn.metrics import roc_curve
+
+    for name, model in models.items():
+        y_proba = model.predict_proba(X_test)[:,1]
+        fpr, tpr, _ = roc_curve(y_test, y_proba)
+        ax.plot(fpr, tpr, label=name)
+
+    ax.plot([0,1], [0,1], linestyle="--")
+    ax.set_xlabel("False Positive Rate")
+    ax.set_ylabel("True Positive Rate")
+    ax.set_title("ROC Curve")
+    ax.legend()
+
+    st.pyplot(fig)
+
+    st.info("""
+    **Penjelasan Grafik ROC Curve**
+
+    Grafik ROC (Receiver Operating Characteristic) menunjukkan kemampuan model dalam membedakan antara pasien yang mengalami stroke dan yang tidak mengalami stroke pada berbagai nilai ambang (threshold).
+
+    - Sumbu **X (False Positive Rate)** menunjukkan proporsi pasien yang sebenarnya tidak stroke tetapi diprediksi sebagai stroke.
+    - Sumbu **Y (True Positive Rate / Recall)** menunjukkan proporsi pasien stroke yang berhasil terdeteksi oleh model.
+
+    Setiap garis pada grafik merepresentasikan satu model:
+    - **Semakin mendekati sudut kiri atas**, semakin baik performa model.
+    - Garis putus-putus diagonal menunjukkan performa tebakan acak (random guessing).
+    - Kurva yang berada di atas garis diagonal menunjukkan bahwa model memiliki kemampuan prediksi yang baik.
+
+    Model dengan **luas area di bawah kurva (ROC-AUC) paling besar** memiliki kemampuan terbaik dalam membedakan kelas stroke dan tidak stroke.
+    """)
+
